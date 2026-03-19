@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: springai-demo02
+    name: springai-demo03
   ai:
     openai:
       base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
