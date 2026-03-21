@@ -6,7 +6,7 @@ spring:
     name: springai-demo03
   ai:
     openai:
-      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      base-url: https://dashscope.aliyuncs.com/compatible-mode
       api-key: ${OPENAI_API_KEY} # 读环境变量
 
 logging:

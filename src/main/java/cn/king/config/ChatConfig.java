@@ -14,13 +14,18 @@ import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Map;
+
 @Configuration
 public class ChatConfig {
 
     @Bean
     public ChatClient chatClient(OpenAiChatModel model, ChatMemory chatMemory, CourseTool courseTool) {
         OpenAiChatOptions options = OpenAiChatOptions.builder()
+                // 模型名
                 .model("qwen3.5-plus")
+                // 关闭思考模式
+                .extraBody(Map.of("enable_thinking", false))
                 .temperature(0.8)
                 .build();
 
@@ -29,9 +34,9 @@ public class ChatConfig {
                 // 系统提示词
                 .defaultSystem(SysConstant.SYSTEM_PROMPT)
                 .defaultAdvisors(
-                        // 日志
+                        // 日志管理的环绕增强
                         new SimpleLoggerAdvisor(),
-                        // 记忆
+                        // 记忆管理的环绕增强
                         MessageChatMemoryAdvisor.builder(chatMemory).build()
                 )
                 // function/tool
@@ -39,7 +44,7 @@ public class ChatConfig {
                 .build();
     }
 
-    // 记忆如何存储. 测试时使用内存存储
+    // 记忆如何存储. 测试时使用内存存储,生产环境存库
     @Bean
     public ChatMemoryRepository chatMemoryRepository() {
         return new InMemoryChatMemoryRepository();
@@ -49,6 +54,7 @@ public class ChatConfig {
     @Bean
     public ChatMemory chatMemory(ChatMemoryRepository chatMemoryRepository) {
         return MessageWindowChatMemory.builder()
+                // 使用内存存储
                 .chatMemoryRepository(chatMemoryRepository)
                 // 仅保留最近 20 条消息，避免上下文无限增长
                 .maxMessages(20)
